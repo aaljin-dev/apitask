@@ -5,6 +5,7 @@ import { FaHeart } from "react-icons/fa";
 
 const Home = () => {
   const [post, setPost] = useState([]);
+  const [like, setLink] = useState([]);
 
   useEffect(() => {
     const postdata = async () => {
@@ -14,7 +15,19 @@ const Home = () => {
     postdata();
   }, []);
 
-  console.log(post);
+  const handleLike = (id) => {
+    setLink((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      return [...prev, id];
+    });
+  };
+  console.log(like);
+
+  const findLike = (id) => {
+    return like.includes(id);
+  };
 
   return (
     <div>
@@ -22,21 +35,27 @@ const Home = () => {
 
       <div>
         <div>
-          {post.map((item) => {
-            return (
-              <div className="flex flex-col justify-center items-center w-[100%] ">
+          <div className="flex flex-col justify-center items-center w-[100%] ">
+            {post.map((item) => {
+              return (
                 <div
                   key={item.id}
                   className="w-[50%] border border-red-500 p-5 mb-5"
                 >
                   <Link to={`/post/${item.id}`}>{item.title}</Link>
+                  <div>
+                    <FaHeart
+                      className={`${findLike(item.id) ? "text-amber-500" : "text-white"} mt-2 bg-red-500 border
+                       border-amber-700 p-1 rounded-full text-4xl`}
+                      onClick={() => {
+                        handleLike(item.id);
+                      }}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <FaHeart className="text-black bg-red-500 border border-amber-700 p-1 rounded-full text-4xl" />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
