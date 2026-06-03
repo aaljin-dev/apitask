@@ -11,4 +11,8 @@ export const router = createBrowserRouter([
     path: "post/:id",
     element: <Post />,
   },
+  {
+    path: "/error",
+    element: <Error />,
+  },
 ]);
