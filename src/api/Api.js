@@ -8,6 +8,8 @@ export const postFunction = async () => {
 
     return post.data;
   } catch (error) {
+    throw new Error("not found");
+
     console.log(error);
   }
 };

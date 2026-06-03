@@ -2,40 +2,42 @@ import React, { useEffect, useState } from "react";
 import { postFunction } from "../../api/Api";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [post, setPost] = useState([]);
-  const [like, setLink] = useState([]);
+  const [like, setLike] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const postdata = async () => {
-      const data = await postFunction();
-      setPost(data);
+      try {
+        const data = await postFunction();
+        setPost(data);
+      } catch (error) {
+        console.log(error, "Done");
+        navigate("/error");
+      }
     };
     postdata();
+    console.log("post loading");
   }, []);
 
   const handleLike = (id) => {
-    setLink((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((item) => item !== id);
-      }
-      return [...prev, id];
-    });
-  };
-  console.log(like);
+    const updatedArray = post.map((item) =>
+      item.id === id ? { ...item, like: !item.like } : item,
+    );
 
-  const findLike = (id) => {
-    return like.includes(id);
+    setPost(updatedArray);
   };
 
   return (
     <div>
-      <h1 className="mb-10">Home</h1>
+      <h1 className="fixed top-0 left-0 w-full bg-white p-4 border">Home</h1>
 
-      <div>
+      <div className="pt-20">
         <div>
-          <div className="flex flex-col justify-center items-center w-[100%] ">
+          <div className="flex flex-col items-center w-[100%] ">
             {post.map((item) => {
               return (
                 <div
@@ -45,7 +47,7 @@ const Home = () => {
                   <Link to={`/post/${item.id}`}>{item.title}</Link>
                   <div>
                     <FaHeart
-                      className={`${findLike(item.id) ? "text-amber-500" : "text-white"} mt-2 bg-red-500 border
+                      className={`${item.like ? "text-amber-500" : "text-white"} mt-2 bg-red-500 border
                        border-amber-700 p-1 rounded-full text-4xl`}
                       onClick={() => {
                         handleLike(item.id);
